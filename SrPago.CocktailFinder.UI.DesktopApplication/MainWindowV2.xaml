@@ -1,0 +1,142 @@
+﻿<Window x:Class="SrPago.CocktailFinder.UI.DesktopApplication.MainWindowV2"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="clr-namespace:SrPago.CocktailFinder.UI.DesktopApplication.Controls"
+        mc:Ignorable="d"
+        Title="MainWindowV2" Height="640" Width="800"
+        Cursor="{Binding CursorWait, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+        >
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="2*" />
+        </Grid.ColumnDefinitions>
+
+        <!--Header-->
+        <controls:HeaderControl Grid.ColumnSpan="2" />
+
+        <!--Navigation-->
+        <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="10 0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.Column="0" Margin="10 10 10 0">Search by</TextBlock>
+            <ComboBox Grid.Row="1" Grid.Column="0" Margin="0 0 5 0"
+                      DisplayMemberPath="Description"
+                      ItemsSource="{Binding CategoryOptions, Mode=OneWay}"
+                      SelectedItem="{Binding CategoryOptionSelected, Mode=TwoWay}" />
+            <TextBlock Grid.Row="0" Grid.Column="1" Margin="10 10 10 0"
+            >Nombre</TextBlock>
+            <TextBox Grid.Row="1" Grid.Column="1" Margin="5 0 0 0"
+                     Text="{Binding NameDrinkToSearch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     IsEnabled="{Binding CanSearchByName}" />
+            <Button Grid.Row="1" Grid.Column="2" Margin="10 0" Content="Search"
+                    VerticalAlignment="Center" HorizontalAlignment="Left"
+                    Command="{Binding SearchCommand, Mode=OneWay}" />
+        </Grid>
+
+        <!--Content-->
+        <!--Result View-->
+        <Grid Grid.Row="2" Grid.Column="0" Margin="10 0 0 0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <ListView Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center"
+                      ItemsSource="{Binding DrinkListResult, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                      SelectedItem="{Binding DrinkSelected, Mode=TwoWay}"
+                      ScrollViewer.CanContentScroll="True"
+                      ScrollViewer.VerticalScrollBarVisibility="Auto"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      HorizontalContentAlignment="Center"
+                      Visibility="{Binding AreDrinkResult, Converter={StaticResource BooleanToVisibilityConverter}}"
+            >
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Border CornerRadius="6" BorderBrush="Gray" Background="LightGray">
+                            <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                                <Image Source="{Binding strDrinkThumb}"  Margin="0 10 0 0" Stretch="Uniform" />
+                                <TextBlock Text="{Binding strDrink}" FontSize="14" />
+                            </StackPanel>
+                        </Border>
+                        
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+        </Grid>
+        <!--Detail-->
+        <Grid Grid.Row="2" Grid.Column="1" Margin="10"
+              ScrollViewer.VerticalScrollBarVisibility="Auto"
+              Visibility="{Binding IsDrinkSelected, Converter={StaticResource BooleanToVisibilityConverter}}"
+              >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Image Grid.Row="0" Grid.Column="0"
+                   Source="{Binding DrinkDetail.Thumbnail, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
+                   Stretch="UniformToFill" />
+            <TextBlock Grid.Row="0" Grid.Column="1" Margin="10" FontSize="16">
+                <Run Text="Name:" FontWeight="Bold" />
+                <Run Text="{Binding DrinkDetail.DrinkName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+                <LineBreak />
+                <Run Text="Category:" FontWeight="Bold" />
+                <Run Text="{Binding DrinkDetail.Category, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+                <LineBreak />
+                <Run Text="Acoholic:" FontWeight="Bold" />
+                <Run Text="{Binding DrinkDetail.IsAlcoholicDrink, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+                <LineBreak />
+                <Run Text="Glass:" FontWeight="Bold" />
+                <Run Text="{Binding DrinkDetail.Glass, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+            </TextBlock>
+
+            <ScrollViewer Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <StackPanel>
+                    <TextBlock FontSize="16">
+                        <Run Text="Ingredients:" FontWeight="Bold" />
+                        <LineBreak />
+                    </TextBlock>
+                    <TextBlock FontSize="14">
+                        <Run Text="{Binding Path=DrinkDetail.Ingredients,Mode=OneWay}" />
+                    </TextBlock>
+                    <TextBlock FontSize="16">
+                        <Run Text="Instructions:" FontWeight="Bold" />
+                        <LineBreak />
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" FontSize="14">
+                        <Run Text="{Binding Path=DrinkDetail.Instructions,Mode=OneWay}" />
+                    </TextBlock>
+                </StackPanel>
+
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</Window>
